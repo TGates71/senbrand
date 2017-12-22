@@ -1,0 +1,49 @@
+<?php
+/**
+ * Install script for SenBrand Module for Sentora 1.0.3
+ * Version : 1.0.0
+ * Author : TGates
+ */
+ 
+require_once('cnf/db.php');
+require_once('dryden/db/driver.class.php');
+require_once('dryden/debug/logger.class.php');
+require_once('dryden/runtime/dataobject.class.php');
+require_once('dryden/sys/versions.class.php');
+require_once('dryden/ctrl/options.class.php');
+require_once('dryden/ctrl/auth.class.php');
+require_once('dryden/ctrl/users.class.php');
+require_once('dryden/fs/director.class.php');
+require_once('dryden/fs/filehandler.class.php');
+require_once('inc/dbc.inc.php');
+
+function installModule()
+{
+	global $zdbh, $controller;
+	$stmt = $zdbh->prepare("
+		CREATE TABLE IF NOT EXISTS x_senbrand (
+			`sb_id_nm` int(1) DEFAULT '1',
+			`sb_name_tx` varchar(100) NOT NULL,
+			`sb_url_tx` varchar(100) NOT NULL,
+			`sb_logo_tx` varchar(100) NOT NULL,
+			PRIMARY KEY (`sb_id_nm`)
+		) ENGINE=MyISAM DEFAULT CHARSET=utf8;"
+	);
+	$stmt->execute();
+
+	$stmt = $zdbh->prepare("
+		INSERT INTO x_senbrand (sb_id_nm, sb_name_tx, sb_url_tx) VALUES ('1', 'Your Hosting Company', 'http://www.domain.com')"
+	);
+	$stmt->execute();
+	
+    $stmt = $zdbh->prepare("
+		CREATE TABLE IF NOT EXISTS x_senbrand_themes (
+		  `sb_themes_tx` varchar(100) NOT NULL
+		) ENGINE=MyISAM DEFAULT CHARSET=utf8;"
+	);
+     $stmt->execute();
+}
+
+installModule()
+
+?>

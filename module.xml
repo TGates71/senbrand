@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<module>
+    <name>SenBrand</name>
+    <version>100</version>
+	<type>user</type>
+	<defaultcat>Server Admin</defaultcat>
+    <desc>This module allows the server owner to custom brand Sentora to their hosting company.</desc>
+    <authorname>TGates</authorname>
+    <authoremail>tgates@mach-hosting.com</authoremail>
+    <authorurl>http://www.sentora.org/</authorurl>
+    <updateurl>http://zppy-repo.mach-hosting.com/repo/senbrand.xml</updateurl>
+</module>

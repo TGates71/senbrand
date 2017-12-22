@@ -1,0 +1,87 @@
+<!--
+/*
+ * Main module script for Branding Module for Sentora.org
+ * Version : 1.0.0
+ * Author :  TGates
+ * Info : http://sentora.org
+ */
+-->
+
+<div class="zmodule_content panel" id="zmodule_header_<@ ModuleName @>">
+    <div class="panel-heading">
+		<img src="<@ ModuleIcon @>" width="35" height="35" border="0" alt="<@ ModuleName @>">
+		<div class="zmodule_title">
+			<@ ModuleName @><span class="zmodule_desc"><@ ModuleVersion @></span>
+		</div>
+		<div class="zmodule_desc" id="zmodule_desc_<@ ModuleName @>">
+			<@ ModuleDesc @>
+				<!-- Check for updates -->
+				<% if CheckUpdate %>
+					<p>&nbsp;</p>
+					<font color="red" size="3"><b><: New Version Available :></b></font>
+				<% endif %>
+		</div>
+    </div>
+<@ Result @>
+<@ Notice @>
+	<table class="table table-striped">
+		<tr>
+			<th><: Current Branding Image: :></th>
+			<td><@ BrandingImage @></td>
+		</tr>
+	</table>
+<div class="container">
+	<ul class="nav nav-tabs">
+		<li class="active"><a data-toggle="tab" href="#home"><: Configuration :></a></li>
+		<li><a data-toggle="tab" href="#logo"><: Change Branding Logo :></a></li>
+		<li><a data-toggle="tab" href="#apply"><: Apply Branding To Theme :></a></li>
+	</ul>
+
+	<div class="tab-content">
+		<div id="home" class="tab-pane active">
+			<@ Branding @>
+		</div>
+		<div id="logo" class="tab-pane">
+			<form action="./?module=senbrand&action=UploadLogo" method="post" enctype="multipart/form-data">
+				<table class="table table-striped">
+					<tr>
+					
+					<th><: Upload Branding Image: :></th>
+						<td>
+							
+						</td>
+					</tr>
+						<td>
+							<input type="file" name="brandinglogo" id="brandinglogo" />
+							<button class="button-loader btn btn-primary" type="submit" name="submit"><: Upload :></button>
+						</td>
+					</tr>
+				</table>
+				<@ CSFR_Tag @>
+			</form>
+		</div>
+		<div id="apply" class="tab-pane">
+			<form action="./?module=senbrand&action=EditTheme" method="post">
+				<table class="table table-striped">
+					<tr>
+						<th><: Theme name :>:</th>
+						<td><select name = "inTheme" id="inTheme">
+								<@ SelectThemeMenu @>
+							</select></td>
+					</tr>
+					<tr>
+						<th align="right">
+							<button class="button-loader btn btn-success" name="inEdit" type="submit" value="Edit"><: Apply Changes :></button>
+							<button class="button-loader btn btn-warning" name="inUndo" type="submit" value="Undo"><: Undo Changes :></button>
+						</th>
+					</tr>
+				</table>
+				<@ CSFR_Tag @>
+			</form>
+		</div>
+	</div>
+</div>
+
+<br />
+<@ Copyright @>
+
