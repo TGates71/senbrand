@@ -8,5 +8,5 @@
     <authorname>TGates</authorname>
     <authoremail>tgates@mach-hosting.com</authoremail>
     <authorurl>http://www.sentora.org/</authorurl>
-    <updateurl>http://zppy-repo.mach-hosting.com/repo/senbrand.xml</updateurl>
+    <updateurl>https://zppy-repo.mach-hosting.com/repo/senbrand.xml</updateurl>
 </module>

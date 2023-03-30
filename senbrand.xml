@@ -2,7 +2,7 @@
 <updateserver>
 	<modulename>SenBrand</modulename>
 	<latestversion>100</latestversion>
-	<downloadurl>http://zppy-repo.mach-hosting.com/repo/senbrand.zpp</downloadurl>
+	<downloadurl>https://zppy-repo.mach-hosting.com/repo/senbrand.zpp</downloadurl>
 	<desc>This module allows the server owner to custom brand Sentora to their hosting company.</desc>
 	<updatedesc>Initial release</updatedesc>
 	<authorname>TGates</authorname>
