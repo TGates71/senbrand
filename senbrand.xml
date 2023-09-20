@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
 <updateserver>
 	<modulename>SenBrand</modulename>
-	<latestversion>100</latestversion>
+	<latestversion>120</latestversion>
 	<downloadurl>https://zppy-repo.mach-hosting.com/repo/senbrand.zpp</downloadurl>
 	<desc>This module allows the server owner to custom brand Sentora to their hosting company.</desc>
-	<updatedesc>Initial release</updatedesc>
+	<updatedesc>Added translations, improved appearance, updated version check</updatedesc>
 	<authorname>TGates</authorname>
 	<authoremail>tgates@mach-hosting.com</authoremail>
 	<authorurl>http://www.sentora.org</authorurl>

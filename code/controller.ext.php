@@ -1,7 +1,7 @@
 <?php
 /**
- * Controller script for SenBrand Module for Sentora 1.0.3
- * Version : 1.0.0
+ * Controller script for SenBrand Module for Sentora 2.x.x
+ * Version : 1.2.0
  * Author : TGates
  * Info : http://sentora.org
  */
@@ -10,20 +10,24 @@
 // Function to retrieve remote XML for update check
 function check_remote_xml($xmlurl,$destfile)
 {
-	$feed = simplexml_load_file($xmlurl);
-	if ($feed)
+	if (file_exists($xmlurl))
 	{
-		// $feed is valid, save it
-		$feed->asXML($destfile);
-	}
-	elseif (file_exists($destfile))
-	{
-		// $feed is not valid, grab the last backup
-		$feed = simplexml_load_file($destfile);
-	}
-	else
-	{
-		die('Unable to retrieve XML file');
+		$feed = simplexml_load_file($xmlurl);
+		if ($feed)
+		{
+			// $feed is valid, save it
+			$feed->asXML($destfile);
+		}
+		elseif (file_exists($destfile))
+		{
+			// $feed is not valid, grab the last backup
+			$feed = simplexml_load_file($destfile);
+		}
+		else
+		{
+			die('Unable to retrieve XML file');
+		}
+		die('No update data available');
 	}
 }
 
@@ -64,14 +68,20 @@ class module_controller
 
         // Download XML in Update URL and get Download URL and Version
         $myfile = check_remote_xml($module_updateurl, $module_path."/" . $controller->GetControllerRequest('URL', 'module') . ".xml");
-        $update_config = new xml_reader(fs_filehandler::ReadFileContents($module_path."/" . $controller->GetControllerRequest('URL', 'module') . ".xml"));
-        $update_config->Parse();
-        $update_url = $update_config->document->downloadurl[0]->tagData;
-        $update_version = $update_config->document->latestversion[0]->tagData;
+		if (!file_exists($myfile))
+		{
+			return false;
+		}
+		else
+		{
+			$update_config = new xml_reader(fs_filehandler::ReadFileContents($module_path."/" . $controller->GetControllerRequest('URL', 'module') . ".xml"));
+			$update_config->Parse();
+			$update_url = $update_config->document->downloadurl[0]->tagData;
+			$update_version = $update_config->document->latestversion[0]->tagData;
 
-        if($update_version > $module_version)
-            return true;
-        return false;
+			if($update_version > $module_version) return true;
+			return false;
+		}
     }
 
     static function getBrandingImage()
@@ -86,7 +96,7 @@ class module_controller
 		
         if (!$branding_image_url)
 		{
-			$brandingImage = "No branding image.";
+			$brandingImage = ui_language::translate("No branding image.");
 		}
 		else
 		{
@@ -117,7 +127,7 @@ class module_controller
 								class=\"form-control\"
 								name=\"inCoName\"
 								id=\"co_name_tx\"
-								value=\"" . $brandSettings['sb_name_tx'] . "\">
+								value=\"" . $brandSettings['sb_name_tx'] . "\" required>
 							</label>
 						</div>
 						<div class=\"form-group\">
@@ -127,7 +137,7 @@ class module_controller
 								class=\"form-control\"
 								name=\"inCoUrl\"
 								id=\"co_url_tx\"
-								value=\"" . $brandSettings['sb_url_tx'] . "\">
+								value=\"" . $brandSettings['sb_url_tx'] . "\" required>
 							</label>
 						</div>";
 			$toReturn .= "<p></p>
@@ -177,8 +187,8 @@ class module_controller
         self::$error = false;
         if ($_FILES['brandinglogo']['error'] > 0)
 		{
-			self::$error_message = "Couldn't upload the file, " . $_FILES['brandinglogo']['error'];
-            echo "Couldn't upload the file, " . $_FILES['brandinglogo']['error'];
+			self::$error_message = ui_language::translate("Couldn't upload the file") . ", " . $_FILES['brandinglogo']['error'];
+            echo ui_language::translate("Couldn't upload the file") . ", " . $_FILES['brandinglogo']['error'];
 			exit();
         }
 		else
@@ -226,12 +236,12 @@ class module_controller
 					}
 					else
 					{
-						self::$error_message = "Image file not uploaded!";
+						self::$error_message = ui_language::translate("Image file not uploaded!");
 					}
 				}
 				else 
 				{
-					self::$error_message = "Please choose an image file!";
+					self::$error_message = ui_language::translate("Please choose an image file!");
 				}		
 			}
         }
@@ -271,11 +281,11 @@ class module_controller
 		{
 			if (in_array($theme['name'], $themes))
 			{
-				$status = " - Enabled";
+				$status = " - " . ui_language::translate('Branded');
 			}
 			else
 			{
-				$status = " - Disabled";
+				$status = " - " . ui_language::translate('Default');
 			}
 			
             if ($theme['name'] != self::getCurrentTheme())
@@ -340,11 +350,11 @@ class module_controller
 				$file_contents = file_get_contents($path_to_master);
 				$file_contents = str_replace($find_master, $replace_master, $file_contents);
 				file_put_contents($path_to_master, $file_contents);
-				self::$verify .= "SenBrand has edited master.ztml<br>";
+				self::$verify .= ui_language::translate("SenBrand has edited") . " master.ztml<br>";
 			}
 			else
 			{
-				self::$error_message .= "SenBrand can not edit master.ztml for " . $formvars['inTheme'] . "<br>";
+				self::$error_message .= ui_language::translate("SenBrand can not edit") . " master.ztml - " . $formvars['inTheme'] . "<br>";
 			}
 			
 			// login.ztml hook
@@ -370,11 +380,11 @@ class module_controller
 				
 				$file_contents = str_replace($find_login, $replace_login, $file_contents);
 				file_put_contents($path_to_login, $file_contents);
-				self::$verify .= "SenBrand has edited login.ztml<br>";
+				self::$verify .= ui_language::translate("SenBrand has edited") . " login.ztml<br>";
 			}
 			else
 			{
-				self::$error_message .= "SenBrand can not edit login.ztml for " . $formvars['inTheme'] . "<br>";
+				self::$error_message .= ui_language::translate("SenBrand can not edit") . " login.ztml - " . $formvars['inTheme'] . "<br>";
 			}
 			// edit login.ztml 'powered by'
 			// check to see if stirng exists in login.ztml
@@ -397,11 +407,11 @@ class module_controller
 				
 				$file_contents = str_replace("Powered by", $replace_login, $file_contents);
 				file_put_contents($path_to_login, $file_contents);
-				self::$verify .= "SenBrand has edited login.ztml Powered by entry<br>";
+				self::$verify .= ui_language::translate("SenBrand has edited") . " login.ztml Powered by " . ui_language::translate("entry") . "<br>";
 			}
 			else
 			{
-				self::$error_message .= "SenBrand can not edit login.ztml Powered by entry for " . $formvars['inTheme'] . "<br>";
+				self::$error_message .= ui_language::translate("SenBrand can not edit") . " login.ztml Powered by " . ui_language::translate("entry for") . $formvars['inTheme'] . "<br>";
 			}
 			return;
   		}
@@ -451,11 +461,11 @@ class module_controller
 				$file_contents = file_get_contents($path_to_master);
 				$file_contents = str_replace($find_master, $replace_master, $file_contents);
 				file_put_contents($path_to_master, $file_contents);
-				self::$verify .= "SenBrand has reverted the changes to master.ztml for " . $formvars['inTheme'] . "<br>";
+				self::$verify .= ui_language::translate("SenBrand has reverted the changes to") . " master.ztml - " . $formvars['inTheme'] . "<br>";
 			}
 			else
 			{
-				self::$error_message = "SenBrand can not edit master.ztml for " . $formvars['inTheme'] . "<br>";
+				self::$error_message = ui_language::translate("SenBrand can not edit") . " master.ztml - " . $formvars['inTheme'] . "<br>";
 			}
 			
 			// undo login.ztml hook
@@ -481,11 +491,11 @@ class module_controller
 				
 				$file_contents = str_replace($find_login, $replace_login, $file_contents);
 				file_put_contents($path_to_login, $file_contents);
-				self::$verify .= "SenBrand has reverted the changes to login.ztml for " . $formvars['inTheme'] . "<br>";
+				self::$verify .= ui_language::translate("SenBrand has reverted the changes to") . " login.ztml - " . $formvars['inTheme'] . "<br>";
 			}
 			else
 			{
-				self::$error_message = "SenBrand can not edit login.ztml for " . $formvars['inTheme'] . "<br>";
+				self::$error_message = ui_language::translate("SenBrand can not edit") . " login.ztml - " . $formvars['inTheme'] . "<br>";
 			}
 			// undo login.ztml 'powered by'
 			// check to see if stirng exists in login.ztml
@@ -509,17 +519,17 @@ class module_controller
 				
 				$file_contents = str_replace($replace_login, "Powered by", $file_contents);
 				file_put_contents($path_to_login, $file_contents);
-				self::$verify .= "SenBrand has edited login.ztml Powered by entry<br>";
+				self::$verify .= ui_language::translate("SenBrand has edited") . " login.ztml Powered by " . ui_language::translate("entry") . "<br>";
 			}
 			else
 			{
-				self::$error_message .= "SenBrand can not edit login.ztml Powered by entry for " . $formvars['inTheme'] . "<br>";
+				self::$error_message .= ui_language::translate("SenBrand can not edit") . " login.ztml Powered by " . ui_language::translate("entry for") . $formvars['inTheme'] . "<br>";
 			}
 			return;
 		}
 		else
 		{
-			echo "You are not accessing this file properly!";
+			echo ui_language::translate("You are not accessing this file properly!");
 			exit();
 		}
     }
@@ -567,7 +577,7 @@ class module_controller
 	
     static function getCopyright()
 	{
-        $message = '<font face="ariel" size="2">'.ui_module::GetModuleName().' v1.0.0 &copy; 2017-'.date("Y").' by <a target="_blank" href="http://forums.sentora.org/member.php?action=profile&uid=2">TGates</a> for <a target="_blank" href="http://sentora.org">Sentora Control Panel</a>&nbsp;&#8212;&nbsp;Help support future development of this module and donate today!</font>
+        $message = '<font face="ariel" size="2">'.ui_module::GetModuleName().' v1.2.0 &copy; 2017-'.date("Y").' by <a target="_blank" href="http://forums.sentora.org/member.php?action=profile&uid=2">TGates</a> for <a target="_blank" href="http://sentora.org">Sentora Control Panel</a>&nbsp;&#8212;&nbsp;Help support future development of this module and donate today!</font>
 <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_blank">
 <input type="hidden" name="cmd" value="_s-xclick">
 <input type="hidden" name="hosted_button_id" value="DW8QTHWW4FMBY">

@@ -1,9 +1,8 @@
 <?php
 /*
- * Upgrade script for Branding Module for Sentora.org
- * Version : 1.0.0
+ * Upgrade script for Branding Module for Sentora v2.x.x
+ * Version : 1.2.0
  * Author :  TGates
- * Email :  tgates@mach-hosting.com
  */
 
 require_once('cnf/db.php');
@@ -17,7 +16,7 @@ require_once('dryden/ctrl/users.class.php');
 require_once('dryden/fs/director.class.php');
 require_once('inc/dbc.inc.php');
 
-UpgradeModule('100', 'senbrand');
+UpgradeModule('120', 'senbrand');
 
 function UpgradeModule($newversion, $module){
     global $zdbh;
